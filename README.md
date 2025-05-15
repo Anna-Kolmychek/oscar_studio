@@ -20,7 +20,7 @@ http://193.164.150.86:8097/api/swagger/
 
 
 
-## Локальный запуск проекта через docker:
+## Запуск проекта через docker:
 Клонировать репозиторий и перейти в него в командной строке:
 ```
 git clone git@github.com:Anna-Kolmychek/oscar_studio.git
@@ -42,7 +42,7 @@ nano .env
 
 Собрать и запустить контейнеры:
 ```
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 После запуска сервера документация к API будет доступна по ссылке:  
