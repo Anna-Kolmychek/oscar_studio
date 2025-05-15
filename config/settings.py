@@ -14,7 +14,7 @@ DEBUG = os.getenv('DEBUG', default='True') == 'True'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='*').split()
 
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']
+# CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']
 # CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', default=)
 
 # Application definition
@@ -143,7 +143,12 @@ CELERY_BROKER_URL = REDIS_LOCATION
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_TIME_LIMIT = 30 * 60
-CELERY_BEAT_SCHEDULER = os.getenv(
-    'CELERY_BEAT_SCHEDULER',
-    default='django_celery_beat.schedulers:DatabaseScheduler'
-)
+
+
+TG_BOT_TOKEN = os.getenv('TG_BOT_TOKEN')
+
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')

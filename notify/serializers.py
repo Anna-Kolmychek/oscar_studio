@@ -10,7 +10,9 @@ from notify.tasks import send_notification
 
 
 class RecipientField(serializers.Field):
-    """Сериализатор для поля recipient. Включает валидацию данных."""
+    """
+    Сериализатор для поля recipient. Включает валидацию данных.
+    """
 
     def to_internal_value(self, data):
         if isinstance(data, str):
@@ -29,7 +31,9 @@ class RecipientField(serializers.Field):
         return data
 
     def is_valid_recipient(self, recipient):
-        """Проверяем, является ли recipient tg ID или Email"""
+        """
+        Проверка, является ли recipient tg ID или Email
+        """
 
         if recipient.isdigit():
             return True
@@ -42,7 +46,9 @@ class RecipientField(serializers.Field):
 
 
 class NotifySerializer(serializers.ModelSerializer):
-    """Основной сериализатор - создание напоминания и получаетелей в базе"""
+    """
+    Основной сериализатор - создание напоминания и получаетелей в базе
+    """
     recipient = RecipientField(write_only=True,)
 
     class Meta:
@@ -55,7 +61,7 @@ class NotifySerializer(serializers.ModelSerializer):
 
         eta = None
         if notification.delay == 1:
-            eta = timezone.now() + timedelta(hours=1)
+            eta = timezone.now() + timedelta(minutes=1)
         elif notification.delay == 2:
             eta = timezone.now() + timedelta(days=1)
 
@@ -64,17 +70,17 @@ class NotifySerializer(serializers.ModelSerializer):
                 recipient_class = RecipientTG
             else:
                 recipient_class = RecipientEmail
-            recipient_class.objects.create(
+            new_recipient = recipient_class.objects.create(
                 recipient=recipient,
                 notification=notification,
             )
 
             send_notification.apply_async(
                 args=[
-                    recipient,
+                    new_recipient.pk,
                     recipient_class.__name__,
-                    notification.message,
-                    ],
+                    notification.pk,
+                ],
                 eta=eta,
             )
 

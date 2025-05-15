@@ -5,12 +5,18 @@ from notify.models import RecipientTG, RecipientEmail, Notification, \
 
 
 class RecipientTGInline(admin.TabularInline):
+    """
+    Инлайновая модель RecipientTG для вставки в Notification
+    """
     model = RecipientTG
     fields = ('recipient', )
     extra = 0
 
 
 class RecipientEmailInline(admin.TabularInline):
+    """
+    Инлайновая модель RecipientEmail для вставки в Notification
+    """
     model = RecipientEmail
     fields = ('recipient', )
     extra = 0
@@ -18,6 +24,10 @@ class RecipientEmailInline(admin.TabularInline):
 
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
+    """
+    Настройка админки для модели Notification
+    """
+
     list_display = ('message', 'delay', 'created_at', )
     list_display_links = ('message', )
 
@@ -29,6 +39,10 @@ class NotificationAdmin(admin.ModelAdmin):
 
 @admin.register(NotificationLog)
 class NotificationLogAdmin(admin.ModelAdmin):
+    """
+    Настройка админки для модели NotificationLog
+    """
+
     list_display = ('notification', 'recipient', 'created_at', 'status')
     list_display_links = ('notification',)
 

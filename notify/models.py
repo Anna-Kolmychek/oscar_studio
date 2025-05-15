@@ -4,7 +4,9 @@ from django.utils.translation import gettext as _
 
 
 class Notification(models.Model):
-    """Модель уведомления"""
+    """
+    Модель уведомления
+    """
 
     DELAY_CHOICES = [
         (0, 'отправка сразу'),
@@ -35,7 +37,9 @@ class Notification(models.Model):
 
 
 class RecipientTG(models.Model):
-    """Модель для адресов получаетелей по tg"""
+    """
+    Модель для адресов получателей по tg
+    """
 
     recipient = models.CharField(
         max_length=150,
@@ -57,7 +61,9 @@ class RecipientTG(models.Model):
 
 
 class RecipientEmail(models.Model):
-    """Модель для адресов получаетелей по email"""
+    """
+    Модель для адресов получателей по email
+    """
 
     recipient = models.EmailField(
         max_length=150,
@@ -80,12 +86,19 @@ class RecipientEmail(models.Model):
         return f'{self.recipient}'
 
 
+class STATUS:
+    SUCCESS = 'success'
+    FAILED = 'failed'
+
+
 class NotificationLog(models.Model):
-    """Модель для логов отправки"""
+    """
+    Модель для логов отправки
+    """
 
     STATUS_CHOICES = [
-        ('success', 'Успешно'),
-        ('failed', 'Ошибка'),
+        (STATUS.SUCCESS, 'Успешно'),
+        (STATUS.FAILED, 'Ошибка'),
     ]
 
     notification = models.ForeignKey(
@@ -97,12 +110,16 @@ class NotificationLog(models.Model):
     recipient_tg = models.ForeignKey(
         RecipientTG,
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
         related_name='notification_logs',
         verbose_name=_('recipient in tg'),
     )
     recipient_email = models.ForeignKey(
         RecipientEmail,
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
         related_name='notification_logs',
         verbose_name=_('recipient in email'),
     )
