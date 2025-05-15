@@ -13,6 +13,7 @@ services:
       retries: 5
 
   backend:
+    image: oscar-studio:latest
     build: .
     env_file: .env
     volumes:
@@ -41,7 +42,7 @@ services:
     restart: always
 
   celery:
-    build: .
+    image: oscar-studio:latest
     command: celery -A config worker --loglevel=info --logfile=/var/log/celery/celery_worker.log --max-tasks-per-child=100
     volumes:
       - ./logs:/var/log/celery
