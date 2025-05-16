@@ -1,17 +1,21 @@
+import logging
 from smtplib import SMTPException
 
 import requests
 from celery import shared_task
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 
 from notify.models import RecipientTG, RecipientEmail, NotificationLog, \
     Notification, STATUS
 
 
+logger = logging.getLogger(__name__)
+
 @shared_task
 def send_notification(
-        recipient_pk: int, recipient_type: str, notification_pk: int
+        recipient_id: int, recipient_type: str, notification_id: int
 ) -> None:
     """
     Задача Celery для отправки уведомления
@@ -21,8 +25,13 @@ def send_notification(
     recipient_class = (
         RecipientTG if recipient_type == 'RecipientTG' else RecipientEmail
     )
-    recipient = recipient_class.objects.filter(pk=recipient_pk).first()
-    notification = Notification.objects.filter(pk=notification_pk).first()
+
+    try:
+        recipient = recipient_class.objects.get(id=recipient_id)
+        notification = Notification.objects.get(id=notification_id)
+    except ObjectDoesNotExist as e:
+        logger.error(f'Ошибка получения данных из БД {str(e)}')
+        raise
 
     # Определяем что нужно отправить (письмо или сообщение в ТГ),
     # вызываем соответствующую функцию

@@ -28,7 +28,7 @@ class NotificationAdmin(admin.ModelAdmin):
     Настройка админки для модели Notification
     """
 
-    list_display = ('message', 'delay', 'created_at', )
+    list_display = ('id', 'message', 'delay', 'created_at', )
     list_display_links = ('message', )
 
     fields = ('message', 'delay', 'created_at', )

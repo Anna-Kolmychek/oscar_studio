@@ -60,32 +60,34 @@ class NotifySerializer(serializers.ModelSerializer):
         recipients = validated_data.pop('recipient')
         notification = super().create(validated_data)
 
-        eta = None
-        if notification.delay == 1:
-            eta = timezone.now() + timedelta(minutes=1)
-        elif notification.delay == 2:
-            eta = timezone.now() + timedelta(days=1)
+        def after_notification_commit():
+            eta = None
+            if notification.delay == 1:
+                eta = timezone.now() + timedelta(minutes=1)
+            elif notification.delay == 2:
+                eta = timezone.now() + timedelta(days=1)
 
-        for recipient in recipients:
-            if recipient.isdigit():
-                recipient_class = RecipientTG
-            else:
-                recipient_class = RecipientEmail
+            for recipient in recipients:
+                if recipient.isdigit():
+                    recipient_class = RecipientTG
+                else:
+                    recipient_class = RecipientEmail
 
-            new_recipient = recipient_class.objects.create(
-                recipient=recipient,
-                notification=notification,
-            )
-
-            transaction.on_commit(
-                lambda: send_notification.apply_async(
-                    args=[
-                        new_recipient.pk,
-                        recipient_class.__name__,
-                        notification.pk,
-                    ],
-                    eta=eta,
+                new_recipient = recipient_class.objects.create(
+                    recipient=recipient,
+                    notification=notification,
                 )
-            )
 
+                transaction.on_commit(
+                    lambda: send_notification.apply_async(
+                        args=[
+                            new_recipient.id,
+                            recipient_class.__name__,
+                            notification.id,
+                        ],
+                        eta=eta,
+                    )
+                )
+
+        transaction.on_commit(after_notification_commit)
         return notification

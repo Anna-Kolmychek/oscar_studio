@@ -10,8 +10,18 @@
 **Примечание**: относительно ТЗ исправлена опечатка в названии поля:
 `recepient` заменено на `recipient`.
 
+## Доступ
 
-## Запуск проекта через docker:
+Проект развернут на сервере. Эндпоинт доступен по ссылке
+```
+http://193.164.150.86:8097/api/swagger/
+```
+
+Для того чтобы получать сообщения в ТГ, 
+активируйте бота `https://t.me/AKolmychekBot` через команду `\start`
+
+
+## Запуск проекта через docker
 Клонировать репозиторий и перейти в него в командной строке:
 ```
 git clone git@github.com:Anna-Kolmychek/oscar_studio.git
@@ -42,57 +52,3 @@ http://127.0.0.1:8097/api/swagger/
 Админка будет доступна по ссылке:  
 http://127.0.0.1:8097/admin/
 
-
-## Локальный запуск проекта без сборки образов:
-Клонировать репозиторий и перейти в него в командной строке:
-```
-git clone git@github.com:Anna-Kolmychek/oscar_studio.git
-```
-ИЛИ
-```
-git clone https://github.com/Anna-Kolmychek/oscar_studio.git
-```
-И
-```
-cd oscar_studio
-```
-
-Создать и активировать виртуальное окружение:
-```
-python -m venv venv
-```
-```
-venv\Scripts\activate
-```
-
-Установить зависимости из файла requirements.txt:
-```
-pip install -r requirements.txt
-```
-
-Создать и заполнить .env по образцу .env_template:
-```
-mv .env_template .env
-nano .env
-```
-
-Выполнить миграции
-```
-python manage.py makemigrations
-python manage.py migrate
-```
-
-Запустить локальный сервер Django:
-```
-python manage.py runserver
-```
-и celery (должен быть установлен и запущен redis):
-```
-celery -A config worker --loglevel=info
-```
-
-После запуска сервера документация к API и примеры запросов будут доступны по ссылкам:
-http://127.0.0.1:8000/api/redoc/ и http://127.0.0.1:8000/api/swagger/
-
-Админка доступна по ссылке
-http://127.0.0.1:8000/admin/
