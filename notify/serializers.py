@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
 
@@ -70,18 +71,21 @@ class NotifySerializer(serializers.ModelSerializer):
                 recipient_class = RecipientTG
             else:
                 recipient_class = RecipientEmail
+
             new_recipient = recipient_class.objects.create(
                 recipient=recipient,
                 notification=notification,
             )
 
-            send_notification.apply_async(
-                args=[
-                    new_recipient.pk,
-                    recipient_class.__name__,
-                    notification.pk,
-                ],
-                eta=eta,
+            transaction.on_commit(
+                lambda: send_notification.apply_async(
+                    args=[
+                        new_recipient.pk,
+                        recipient_class.__name__,
+                        notification.pk,
+                    ],
+                    eta=eta,
+                )
             )
 
         return notification
