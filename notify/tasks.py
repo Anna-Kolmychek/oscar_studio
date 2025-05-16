@@ -58,7 +58,7 @@ def send_tg_message(recipient: str, message: str) -> str | Exception:
         response = requests.post(url, data=data)
         response.raise_for_status()
         return 'success'
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         return e
 
 
@@ -74,7 +74,7 @@ def send_email(recipient: str, message: str) -> str | Exception:
             recipient_list=[recipient],
         )
         return 'success'
-    except SMTPException as e:
+    except Exception as e:
         return e
 
 
